@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>分数运算</title>
+    <style>
+        .content {
+            width: 1000px;
+            margin: 50px auto;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .wrap {
+            margin-top: 100px;
+            min-height: 300px;
+            max-height: 600px;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        .wrap .box {
+            width: 200px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: nowrap;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .wrap .box .number {
+            width: 100%;
+            height: 100px;
+            font-size: 60px;
+            text-align: center;
+
+        }
+
+        .symbolText {
+            font-size: 150px;
+            text-align: center;
+        }
+
+        #result {
+            font-size: 70px;
+        }
+
+        .hr,
+        #result .hr {
+            height: 5px;
+            width: 100%;
+            font-size: 16px;
+            background: #333;
+        }
+
+        .footer {
+            margin: 50px 0;
+            text-align: center;
+        }
+
+        .footer input[type='button'] {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            color: #fff;
+            margin: 0px 20px;
+            outline: none;
+        }
+
+        .footer input[type='number'] {
+            background: none;
+            border: none;
+            border: 1px solid #cccccc;
+            width: 80px;
+            outline: none;
+            font-size: 16px;
+            text-align: center;
+            padding: 10px 20px;
+        }
+
+        .footer input[type='button']:first-child {
+            background-color: #409EFF;
+        }
+
+        .footer input[type='button']:last-child {
+            background-color: #67C23A;
+        }
+
+        .footer input[type='button']:hover {
+            opacity: 0.7;
+            cursor: pointer;
+        }
+
+        @media screen and (max-width: 960px) {
+            .content {
+                width: 100%;
+            }
+
+            .wrap {
+                margin-top: 50px;
+            }
+
+            .wrap .box {
+                width: 20%;
+            }
+
+            .wrap .box .number {
+                width: 100%;
+                height: 50px;
+                font-size: 24px;
+                text-align: center;
+
+            }
+
+            .hr,
+            #result .hr {
+                height: 3px;
+            }
+
+            .symbolText {
+                font-size: 50px;
+            }
+
+            #result {
+                font-size: 24px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <h1>分数运算</h1>
+        <div class="wrap">
+            <div class="box">
+                <div class="number">100</div>
+                <hr class="hr">
+                <div class="number">100</div>
+            </div>
+            <div class="box symbolText" id="symbolText">&divide;</div>
+            <div class="box">
+                <div class="number">100</div>
+                <hr class="hr">
+                <div class="number">100</div>
+            </div>
+            <div class="box symbolText">=</div>
+            <div class="box" id="result">?</div>
+        </div>
+        <div class="footer">
+            <input type="button" value="显示答案" id="btnResult">
+            <input type="number" value="50" id="largeNum">
+            <input type="button" value="下一题" id="btnNext">
+        </div>
+    </div>
+
+
+    <script>
+        var symbolsIndex = 0;
+        var largeNum = 50;
+        var symbols = ["&times;", "&divide;", "+", "&minus;"];
+        var resultText = document.querySelector("#result");
+        var btnNext = document.querySelector('#btnNext');
+        var btnResult = document.querySelector('#btnResult');
+        var symbolText = document.querySelector('#symbolText');
+        var numberText = document.querySelectorAll('.number');
+
+        //下一题
+        btnNext.addEventListener('click', function () {
+            init();
+        })
+        //显示答案
+        btnResult.addEventListener('click', function () {
+            var result = 0;
+            switch (symbolsIndex) {
+                case 0:
+                    result = multiplication(getNum());
+                    break;
+                case 1:
+                    result = divide(getNum());
+                    break;
+                case 2:
+                    result = add(getNum());
+                    break;
+                case 3:
+                    result = cut(getNum());
+                    break;
+            }
+
+            if (result[0] % result[1] == 0) {
+                resultText.innerHTML = result[0] / result[1];
+            } else {
+                let temp = maxDivisor(result[0], result[1]);
+
+                let html = '<div class="number">' + result[0] / temp +
+                    '</div><hr class="hr"><div class="number">' + result[1] / temp + '</div>';
+                resultText.innerHTML = html;
+            }
+        })
+
+        function init() {
+            symbolsIndex = Math.floor(Math.random() * 4);
+            largeNum = Number(document.querySelector("#largeNum").value);
+            symbolText.innerHTML = symbols[symbolsIndex];
+            for (i = 0; i < numberText.length; i++) {
+                numberText[i].innerHTML = Math.floor(Math.random() * largeNum) + 1;
+            }
+            resultText.innerHTML = "?";
+        }
+
+        function getNum() {
+            let arr = new Array();
+            for (i = 0; i < numberText.length; i++) {
+                arr[i] = Number(numberText[i].innerHTML);
+            }
+            return arr;
+        }
+        //加
+        function add(arr) {
+            return [arr[0] * arr[3] + arr[1] * arr[2], arr[1] * arr[3]]
+        }
+        //减
+        function cut(arr) {
+            return [arr[0] * arr[3] - arr[1] * arr[2], arr[1] * arr[3]]
+        }
+        //乘
+        function multiplication(arr) {
+            return [arr[0] * arr[2], arr[1] * arr[3]]
+        }
+        //除
+        function divide(arr) {
+            return [arr[0] * arr[3], arr[1] * arr[2]]
+        }
+        //最大公约数
+        function maxDivisor(n, m) {
+            var a = (m < n) ? m : n;
+            while (1) {
+                if (m % a == 0 && n % a == 0) break;
+                a--;
+            }
+            return a;
+        }
+        init();
+    </script>
+</body>
+
+</html>
