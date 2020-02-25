@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>分数运算</title>
     <style>
+        input {
+            -webkit-appearance: none;
+        }
+
         .content {
             width: 1000px;
             margin: 50px auto;
@@ -163,33 +167,35 @@
 
     <script>
         var symbolsIndex = 0;
-        var largeNum = 50;
         var symbols = ["&times;", "&divide;", "+", "&minus;"];
         var resultText = document.querySelector("#result");
         var btnNext = document.querySelector('#btnNext');
         var btnResult = document.querySelector('#btnResult');
         var symbolText = document.querySelector('#symbolText');
         var numberText = document.querySelectorAll('.number');
+        var large = document.querySelector("#largeNum");
 
         //下一题
-        btnNext.addEventListener('click', function () {
+        btnNext.onclick = function () {
             init();
-        })
+        }
         //显示答案
-        btnResult.addEventListener('click', function () {
-            var result = 0;
+        btnResult.onclick = function () {
+            var result = null;
+            var num = getNum();
+            console.log(1);
             switch (symbolsIndex) {
                 case 0:
-                    result = multiplication(getNum());
+                    result = multiplication(num);
                     break;
                 case 1:
-                    result = divide(getNum());
+                    result = divide(num);
                     break;
                 case 2:
-                    result = add(getNum());
+                    result = add(num);
                     break;
                 case 3:
-                    result = cut(getNum());
+                    result = cut(num);
                     break;
             }
 
@@ -202,11 +208,11 @@
                     '</div><hr class="hr"><div class="number">' + result[1] / temp + '</div>';
                 resultText.innerHTML = html;
             }
-        })
+        }
 
         function init() {
             symbolsIndex = Math.floor(Math.random() * 4);
-            largeNum = Number(document.querySelector("#largeNum").value);
+            let largeNum = Number(large.value);
             symbolText.innerHTML = symbols[symbolsIndex];
             for (i = 0; i < numberText.length; i++) {
                 numberText[i].innerHTML = Math.floor(Math.random() * largeNum) + 1;
@@ -215,7 +221,7 @@
         }
 
         function getNum() {
-            let arr = new Array();
+            let arr = [];
             for (i = 0; i < numberText.length; i++) {
                 arr[i] = Number(numberText[i].innerHTML);
             }
@@ -238,13 +244,12 @@
             return [arr[0] * arr[3], arr[1] * arr[2]]
         }
         //最大公约数
-        function maxDivisor(n, m) {
-            var a = (m < n) ? m : n;
-            while (1) {
-                if (m % a == 0 && n % a == 0) break;
-                a--;
+        function maxDivisor(a, b) {
+            if (b == 0) {
+                return a;
             }
-            return a;
+            var r = a % b;
+            return maxDivisor(b, r);
         }
         init();
     </script>
