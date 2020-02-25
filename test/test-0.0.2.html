@@ -6,18 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>分数运算</title>
     <style>
-        .content {
-            width: 1000px;
-            margin: 50px auto;
-        }
-
         h1 {
             text-align: center;
         }
 
+        .content {
+            width: 1000px;
+            margin: 80px auto;
+        }
+
+        .timeShow {
+            width: 200px;
+            margin: 0 auto;
+            padding: 15px;
+            color: #fff;
+            font-size: 1.5em;
+            background-color: #333333;
+            text-align: center;
+
+        }
+
         .wrap {
-            margin-top: 100px;
-            min-height: 300px;
+            margin-top: 50px;
             max-height: 600px;
             display: flex;
             justify-content: space-between;
@@ -60,16 +70,18 @@
         }
 
         .footer {
-            margin: 50px 0;
+            display: flex;
+            margin: 80px 0;
             text-align: center;
         }
+
 
         .footer input[type='button'] {
             padding: 10px 20px;
             background: none;
             border: none;
             color: #fff;
-            margin: 0px 20px;
+            margin: 10px 20px;
             outline: none;
         }
 
@@ -82,6 +94,7 @@
             font-size: 16px;
             text-align: center;
             padding: 10px 20px;
+            margin: auto;
         }
 
         .footer input[type='button']:first-child {
@@ -100,10 +113,11 @@
         @media screen and (max-width: 960px) {
             .content {
                 width: 100%;
+                margin: 40px auto 0px;
             }
 
             .wrap {
-                margin-top: 50px;
+                margin-top: 30px;
             }
 
             .wrap .box {
@@ -131,13 +145,29 @@
                 font-size: 24px;
             }
 
+            .footer {
+                flex-wrap: wrap;
+                margin-top: 50px;
+                flex-direction: column;
+
+            }
+
         }
     </style>
 </head>
 
 <body>
-    <div class="content">
+    <header>
         <h1>分数运算</h1>
+    </header>
+    <div class="content">
+        <div class="timeShow">
+            <div class="time">
+                <span>00:</span>
+                <span>00:</span>
+                <span>00</span>
+            </div>
+        </div>
         <div class="wrap">
             <div class="box">
                 <div class="number">100</div>
@@ -164,6 +194,7 @@
     <script>
         var symbolsIndex = 0;
         var largeNum = 50;
+        var time = document.querySelectorAll(".time span");
         var symbols = ["&times;", "&divide;", "+", "&minus;"];
         var resultText = document.querySelector("#result");
         var btnNext = document.querySelector('#btnNext');
@@ -171,13 +202,21 @@
         var symbolText = document.querySelector('#symbolText');
         var numberText = document.querySelectorAll('.number');
 
+        // 初始化时间值
+        var hour = 0,
+            minutes = 0,
+            seconds = 0
+        // 创建定时器的变量
+        var timer;
+
+
         //下一题
         btnNext.addEventListener('click', function () {
             init();
         })
         //显示答案
         btnResult.addEventListener('click', function () {
-            var result = 0;
+            var result;
             switch (symbolsIndex) {
                 case 0:
                     result = multiplication(getNum());
@@ -202,6 +241,7 @@
                     '</div><hr class="hr"><div class="number">' + result[1] / temp + '</div>';
                 resultText.innerHTML = html;
             }
+            clear();
         })
 
         function init() {
@@ -212,8 +252,11 @@
                 numberText[i].innerHTML = Math.floor(Math.random() * largeNum) + 1;
             }
             resultText.innerHTML = "?";
+            over();
+            goTime();
         }
 
+        //获取
         function getNum() {
             let arr = new Array();
             for (i = 0; i < numberText.length; i++) {
@@ -245,6 +288,63 @@
                 a--;
             }
             return a;
+        }
+
+        //计时
+        function goTime() {
+            timer = setInterval(function () {
+                seconds++;
+                if (seconds > 0 && seconds < 59) {
+                    if (seconds < 10) {
+                        time[2].innerHTML = '0' + seconds;
+                    } else {
+                        time[2].innerHTML = seconds;
+                    }
+                } else {
+                    seconds = 0;
+                    minutes++;
+                    time[2].innerHTML = "00";
+                }
+
+                if (seconds > 59) {
+                    if (minutes < 10) {
+                        time[1].innerHTML = '0' + minutes + ':';
+                    } else {
+                        time[1].innerHTML = minutes + ':';
+                    }
+                    minutes++;
+                    time[1].innerHTML = minutes + ':';
+                } else {
+                    time[1].innerHTML = '00' + ':';
+                    minutes = 0;
+                    hour++;
+                }
+                if (minutes > 59) {
+                    if (hour < 10) {
+                        time[0].innerHTML = '0' + hour + ':';
+                    } else {
+                        time[0].innerHTML = hour + ':';
+                    }
+                }
+            }, 1000);
+        }
+
+        // 清除定时器
+        function clear() {
+            if (timer) {
+                clearInterval(timer);
+            }
+            timer = null;
+        }
+        // 重置函数
+        function over() {
+            clearInterval(timer);
+            hour = 0;
+            seconds = 0;
+            minutes = 0;
+            time[0].innerHTML = '0' + hour + ':';
+            time[1].innerText = '0' + minutes + ' : ';
+            time[2].innerText = '0' + seconds
         }
         init();
     </script>
