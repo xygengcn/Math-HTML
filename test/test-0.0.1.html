@@ -21,7 +21,6 @@
 
         .wrap {
             margin-top: 100px;
-            min-height: 300px;
             max-height: 600px;
             display: flex;
             justify-content: space-between;
@@ -64,6 +63,7 @@
         }
 
         .footer {
+            display: flex;
             margin: 50px 0;
             text-align: center;
         }
@@ -73,7 +73,7 @@
             background: none;
             border: none;
             color: #fff;
-            margin: 0px 20px;
+            margin: 10px 20px;
             outline: none;
         }
 
@@ -86,6 +86,7 @@
             font-size: 16px;
             text-align: center;
             padding: 10px 20px;
+            margin: auto;
         }
 
         .footer input[type='button']:first-child {
@@ -104,10 +105,11 @@
         @media screen and (max-width: 960px) {
             .content {
                 width: 100%;
+                margin: 40px auto 0px;
             }
 
             .wrap {
-                margin-top: 50px;
+                margin-top: 30px;
             }
 
             .wrap .box {
@@ -133,6 +135,13 @@
 
             #result {
                 font-size: 24px;
+            }
+
+            .footer {
+                flex-wrap: wrap;
+                margin-top: 50px;
+                flex-direction: column;
+
             }
 
         }
