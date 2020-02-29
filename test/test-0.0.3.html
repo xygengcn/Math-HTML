@@ -215,13 +215,13 @@
             return arr;
         }
 
-        //随机生成
-
+        //随机生成,取两位小数且随机大于1的小数
         function getRand() {
             let rand1 = Math.floor(Math.random() * 10) % 2 == 0 ? true : false; //是否取整数
-            let rand2 = Math.floor(Math.random() * 3) + 2;
-            if (rand1) {
-                return multiplication([Math.random().toFixed(rand2), 10]);
+            let rand2 = Math.floor(Math.random() * 4) + 1;
+            console.log(rand2);
+            if (rand2 > 2) {
+                return parseFloat(multiplication([Math.random().toFixed(rand2), (rand2 - 1) * 10]).toFixed(2));
             } else {
                 return Math.random().toFixed(rand2);
             }
