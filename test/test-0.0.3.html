@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>小数运算</title>
+    <style>
+        input {
+            -webkit-appearance: none;
+        }
+
+        .content {
+            width: 1000px;
+            margin: 50px auto;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .wrap {
+            margin-top: 100px;
+            max-height: 600px;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        .wrap .box {
+            width: 200px;
+            height: 200px;
+            line-height: 200px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: nowrap;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .wrap .box .number {
+            font-size: 60px;
+            text-align: center;
+
+        }
+
+        .symbolText {
+            font-size: 120px;
+
+        }
+
+        #result {
+            font-size: 70px;
+        }
+
+        .footer {
+            display: flex;
+            margin: 50px 0;
+            justify-content: center;
+        }
+
+        .footer input[type='button'] {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            color: #fff;
+            margin: 10px 30px;
+            outline: none;
+        }
+
+        .footer label {
+            line-height: 57px;
+            text-align: center;
+        }
+
+        .footer input[type='number'] {
+            background: none;
+            border: none;
+            border: 1px solid #cccccc;
+            width: 80px;
+            outline: none;
+            font-size: 16px;
+            text-align: center;
+            padding: 10px 20px;
+            margin: 0 5px;
+        }
+
+        .footer input[type='button']:first-child {
+            background-color: #409EFF;
+        }
+
+        .footer input[type='button']:last-child {
+            background-color: #67C23A;
+        }
+
+        .footer input[type='button']:hover {
+            opacity: 0.7;
+            cursor: pointer;
+        }
+
+        @media screen and (max-width: 960px) {
+            .content {
+                width: 100%;
+                margin: 40px auto 0px;
+            }
+
+            .wrap {
+                margin-top: 50px;
+            }
+
+            .wrap .box {
+                width: 20%;
+                height: 50px;
+                line-height: 50px;
+            }
+
+            .wrap .box .number {
+                width: 100%;
+
+                font-size: 24px;
+                text-align: center;
+
+            }
+
+            .wrap .symbolText {
+                font-size: 50px;
+                width: 15%;
+            }
+
+            #result {
+                font-size: 24px;
+            }
+
+            .footer {
+                flex-wrap: wrap;
+                margin-top: 50px;
+                flex-direction: column;
+
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <h1>小数运算</h1>
+        <div class="wrap">
+            <div class="box">
+                <div class="number">100</div>
+            </div>
+            <div class="box symbolText" id="symbolText">&divide;</div>
+            <div class="box">
+                <div class="number">100</div>
+            </div>
+            <div class="box symbolText">=</div>
+            <div class="box" id="result">?</div>
+        </div>
+        <div class="footer">
+            <input type="button" value="显示答案" id="btnResult">
+            <label for="minNum">除法保留<input type="number" value="3" id="minNum">小数</label>
+            <input type="button" value="下一题" id="btnNext">
+        </div>
+    </div>
+    <script>
+        var symbolsIndex = 0;
+        var symbols = ["&times;", "&divide;", "+", "&minus;"];
+        var resultText = document.querySelector("#result");
+        var btnNext = document.querySelector('#btnNext');
+        var btnResult = document.querySelector('#btnResult');
+        var symbolText = document.querySelector('#symbolText');
+        var numberText = document.querySelectorAll('.number');
+        var minNum = document.querySelector('#minNum');
+
+        //下一题
+        btnNext.onclick = function () {
+            init();
+        }
+        //显示答案
+        btnResult.onclick = function () {
+            var result = null;
+            var num = getNum();
+            switch (symbolsIndex) {
+                case 0:
+                    result = multiplication(num);
+                    break;
+                case 1:
+                    result = divide(num);
+                    break;
+                case 2:
+                    result = add(num);
+                    break;
+                case 3:
+                    result = cut(num);
+                    break;
+            }
+            resultText.innerHTML = result;
+        }
+
+        function init() {
+            symbolsIndex = Math.floor(Math.random() * 4);
+            symbolText.innerHTML = symbols[symbolsIndex];
+            for (i = 0; i < numberText.length; i++) {
+                numberText[i].innerHTML = getRand();
+            }
+            resultText.innerHTML = "?";
+        }
+
+        function getNum() {
+            let arr = [];
+            for (i = 0; i < numberText.length; i++) {
+                arr[i] = Number(numberText[i].innerHTML);
+            }
+            return arr;
+        }
+
+        //随机生成
+
+        function getRand() {
+            let rand1 = Math.floor(Math.random() * 10) % 2 == 0 ? true : false; //是否取整数
+            let rand2 = Math.floor(Math.random() * 3) + 2;
+            if (rand1) {
+                return multiplication([Math.random().toFixed(rand2), 10]);
+            } else {
+                return Math.random().toFixed(rand2);
+            }
+        }
+        //加
+        function add(arr) {
+            let sq1, sq2, multiple;
+            try {
+                sq1 = arr[0].toString().split(".")[1].length;
+            } catch (e) {
+                sq1 = 0;
+            }
+            try {
+                sq2 = arr[1].toString().split(".")[1].length;
+            } catch (e) {
+                sq2 = 0;
+            }
+            multiple = Math.pow(10, Math.max(sq1, sq2) + 1);
+            return (arr[0] * multiple + arr[1] * multiple) / multiple;
+        }
+        //减
+        function cut(arr) {
+            let sq1, sq2, multiple;
+            try {
+                sq1 = arr[0].toString().split(".")[1].length;
+            } catch (e) {
+                sq1 = 0;
+            }
+            try {
+                sq2 = arr[1].toString().split(".")[1].length;
+            } catch (e) {
+                sq2 = 0;
+            }
+            multiple = Math.pow(10, Math.max(sq1, sq2) + 1);
+            return (arr[0] * multiple - arr[1] * multiple) / multiple;
+        }
+        //乘
+        function multiplication(arr) {
+            var str1 = arr[0].toString(),
+                str2 = arr[1].toString(),
+                m = 0;
+            try {
+                m += str1.split('.')[1].length;
+            } catch (e) {}
+            try {
+                m += str2.split('.')[1].length;
+            } catch (e) {}
+            return Number(str1.replace(".", "")) * Number(str2.replace(".", "")) / Math.pow(10, m)
+        }
+        //除
+        function divide(arr) {
+            if (arr[1] == 0) {
+                alert("除数为零，无法运算");
+                return "?";
+            } else {
+                var t1 = 0,
+                    t2 = 0,
+                    r1, r2;
+                try {
+                    t1 = arr[0].toString().split(".")[1].length
+                } catch (e) {}
+                try {
+                    t2 = arr[1].toString().split(".")[1].length
+                } catch (e) {}
+                r1 = Number(arr[0].toString().replace(".", ""));
+                r2 = Number(arr[1].toString().replace(".", ""));
+                return parseFloat(((r1 / r2) * Math.pow(10, t2 - t1)).toFixed(Number(minNum.value)));
+            }
+
+        }
+        init();
+    </script>
+</body>
+
+</html>
